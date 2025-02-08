@@ -1,8 +1,11 @@
 
 import { Card } from "@/components/ui/card";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { Activity, Calendar, LineChart, Ruler } from "lucide-react";
+import { Activity, Calendar, LineChart, Ruler, BellDot } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 const stats = [
   {
@@ -31,18 +34,66 @@ const stats = [
   },
 ];
 
+const notifications = [
+  {
+    id: 1,
+    title: "Appointment Reminder",
+    message: "You have a check-up tomorrow at 10:00 AM",
+  },
+  {
+    id: 2,
+    title: "Medicine Reminder",
+    message: "Time to take your evening medication",
+  },
+];
+
 const Index = () => {
+  const { toast } = useToast();
+
+  const showNotification = (notification: typeof notifications[0]) => {
+    toast({
+      title: notification.title,
+      description: notification.message,
+    });
+  };
+
   return (
     <MainLayout>
       <div className="animate-in">
-        <h1 className="mb-2 text-2xl font-semibold">Welcome back, John</h1>
-        <p className="mb-8 text-muted-foreground">Here's your health overview</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Avatar className="h-12 w-12">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+            <div>
+              <h1 className="text-2xl font-semibold">Welcome back, John</h1>
+              <p className="text-muted-foreground">Here's your health overview</p>
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            className="relative"
+            onClick={() => notifications.forEach(showNotification)}
+          >
+            <BellDot className="h-5 w-5" />
+            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
+              {notifications.length}
+            </span>
+          </Button>
+        </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((stat) => (
             <Card key={stat.label} className="p-6">
               <div className="flex items-center gap-4">
-                <div className={cn("rounded-lg p-2 ring-1 ring-inset ring-gray-200", stat.color)}>
+                <div
+                  className={cn(
+                    "rounded-lg p-2 ring-1 ring-inset ring-gray-200",
+                    stat.color
+                  )}
+                >
                   <stat.icon className="h-5 w-5" />
                 </div>
                 <div>
