@@ -2,6 +2,7 @@
 import { Card } from "@/components/ui/card";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Activity, Calendar, LineChart, Ruler } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const stats = [
   {
