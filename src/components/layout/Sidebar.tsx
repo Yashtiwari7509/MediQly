@@ -29,18 +29,21 @@ const sidebarItems = [
 
 export function Sidebar() {
   return (
-    <div className="h-screen w-64 border-r bg-card px-3 py-4">
+    <div className="flex h-screen w-64 flex-col border-r bg-card px-3 py-4">
       <div className="flex items-center gap-2 px-3 py-2">
         <HeartPulse className="h-6 w-6 text-primary" />
         <span className="text-lg font-semibold">HealthCare</span>
       </div>
       
-      <div className="mt-8 flex flex-col gap-2">
+      <div className="scrollbar-none mt-8 flex flex-1 flex-col gap-2 overflow-y-auto">
         {sidebarItems.map((item) => (
           <Link 
             key={item.path}
             to={item.path}
-            className="group flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+            className={cn(
+              "group flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+              window.location.pathname === item.path && "bg-accent text-accent-foreground"
+            )}
           >
             <item.icon className="h-4 w-4" />
             <span>{item.label}</span>
