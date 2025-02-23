@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Activity,
   AlignCenterVertical,
@@ -8,10 +8,7 @@ import {
   LineChart,
   MessageSquare,
   Pill,
-  Plus,
-  Ruler,
   Shield,
-  UserRound,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -33,13 +30,17 @@ const sidebarItems = [
 ];
 
 export function Sidebar() {
+  const location = useLocation(); // ✅ Get current route
+
   return (
-    <div className=" flex  h-screen w-64 flex-col bg-primary/5 backdrop-blur-xl">
+    <div className="flex h-screen w-64 flex-col bg-primary/5 backdrop-blur-xl">
+      {/* Logo */}
       <div className="flex items-center gap-2 border-b px-6 py-4">
         <HeartPulse className="h-6 w-6 text-primary" />
         <span className="text-lg font-semibold">MediQly</span>
       </div>
 
+      {/* Sidebar Links */}
       <ScrollArea className="flex-1 px-3 py-4">
         <div className="space-y-1">
           {sidebarItems.map((item) => (
@@ -48,8 +49,8 @@ export function Sidebar() {
               to={item.path}
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary",
-                window.location.pathname === item.path &&
-                  "bg-primary/10 text-primary font-medium"
+                location.pathname === item.path &&
+                  "bg-primary/10 text-primary font-medium" // ✅ Dynamically update active link
               )}
             >
               <item.icon className="h-4 w-4" />
@@ -59,6 +60,7 @@ export function Sidebar() {
         </div>
       </ScrollArea>
 
+      {/* Chat with Doctor */}
       <div className="border-t p-4">
         <Button asChild className="w-full" variant="outline">
           <Link to="/chat" className="flex items-center gap-2">

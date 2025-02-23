@@ -2,9 +2,9 @@ import { Sidebar } from "./Sidebar";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Menu, Moon, Sun, X, LogOut } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, memo } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -15,50 +15,66 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "@/utils/theme.provider";
+import { useLogout } from "@/hooks/auth";
+import { useAuth } from "@/auth/AuthProvider";
+import exp from "constants";
+import { Navigation } from "./Navigation";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-export function MainLayout({ children }: MainLayoutProps) {
+const MainLayout = ({ children }: MainLayoutProps) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { setTheme, theme } = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const { user, isLoading } = useAuth();
+  const logoutFun = useLogout();
 
   useEffect(() => {
     if (isMobile) {
       setSidebarOpen(false);
     }
-  }, [isMobile]);
+  }, [location.pathname, isMobile]); // Ensure sidebar closes only on mobile when changing route
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
   const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
+    setSidebarOpen((prev) => !prev);
   };
 
   const handleLogout = () => {
-    toast({
-      title: "Logged out",
-      description: "You have been successfully logged out",
+    logoutFun.mutate(undefined, {
+      onSuccess: () => {
+        navigate("/login");
+        toast({
+          title: "Logged out",
+          description: "You have been successfully logged out",
+        });
+      },
     });
-    // Add your logout logic here
   };
+
+  // Memoizing Sidebar to prevent unnecessary renders
+  const memoizedSidebar = useMemo(() => <Sidebar />, []);
 
   return (
     <div className="flex min-h-screen w-full">
-      <div
-        className={`fixed inset-0 z-30 bg-background/80 backdrop-blur-sm transition-all ${
-          isMobile && isSidebarOpen
-            ? "opacity-100"
-            : "pointer-events-none opacity-0"
-        }`}
-        onClick={() => setSidebarOpen(false)}
-      />
+      {/* Overlay when Sidebar is open on mobile */}
+      {isMobile && isSidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm transition-all"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
+      {/* Sidebar */}
       <div
         className={`fixed z-40 h-full transition-transform duration-300 md:relative md:translate-x-0 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -74,9 +90,10 @@ export function MainLayout({ children }: MainLayoutProps) {
             <X className="h-5 w-5" />
           </Button>
         </div>
-        <Sidebar />
+        {memoizedSidebar}
       </div>
 
+      {/* Main Content */}
       <main className="flex-1 overflow-auto">
         <div className="border-b bg-background">
           <div className="container flex h-16 items-center px-4">
@@ -107,7 +124,10 @@ export function MainLayout({ children }: MainLayoutProps) {
                         src="https://github.com/shadcn.png"
                         alt="@shadcn"
                       />
-                      <AvatarFallback>JD</AvatarFallback>
+                      <AvatarFallback>
+                        {user?.firstName.charAt(0)}
+                        {user?.lastName.charAt(0)}
+                      </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
@@ -115,10 +135,10 @@ export function MainLayout({ children }: MainLayoutProps) {
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">
-                        John Doe
+                        {user?.firstName} {user?.lastName}
                       </p>
                       <p className="text-xs leading-none text-muted-foreground">
-                        john.doe@example.com
+                        {user?.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
@@ -137,6 +157,9 @@ export function MainLayout({ children }: MainLayoutProps) {
         </div>
         <div className="container mx-auto p-6 pb-20 md:pb-6">{children}</div>
       </main>
+      <Navigation />
     </div>
   );
-}
+};
+
+export default memo(MainLayout);

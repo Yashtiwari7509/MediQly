@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,25 +16,34 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { profileProps, UserProps } from "@/lib/user.type";
+import { useAuth } from "@/auth/AuthProvider";
+import MainLayout from "@/components/layout/MainLayout";
 
 const profileSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number must be at least 10 characters"),
+  phoneNumber: z
+    .string()
+    .min(10, "Phone number must be at least 10 characters"),
 });
 
 const Profile = () => {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const queryClient = useQueryClient();
+  const { user, isLoading } = useAuth();
+  console.log(user);
 
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      firstName: "John",
-      lastName: "Doe",
-      email: "john.doe@example.com",
-      phone: "+1234567890",
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      email: user?.email,
+      phoneNumber: user?.phoneNumber,
     },
   });
 
@@ -52,7 +60,7 @@ const Profile = () => {
     <MainLayout>
       <div className="animate-in">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">Profile</h1>
+          <h1 className="primary-grad text-3xl font-bold">Profile</h1>
           <p className="text-muted-foreground">Manage your profile settings</p>
         </div>
 
@@ -89,13 +97,15 @@ const Profile = () => {
                     onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-4"
                   >
-                    <div className="grid gap-4 md:grid-cols-2">
+                    <div className="grid gap-6 md:grid-cols-2">
                       <FormField
                         control={form.control}
                         name="firstName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>First Name</FormLabel>
+                            <FormLabel className="text-lg font-semibold">
+                              First Name
+                            </FormLabel>
                             <FormControl>
                               <Input {...field} />
                             </FormControl>
@@ -108,7 +118,9 @@ const Profile = () => {
                         name="lastName"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Last Name</FormLabel>
+                            <FormLabel className="text-lg font-semibold">
+                              Last Name
+                            </FormLabel>
                             <FormControl>
                               <Input {...field} />
                             </FormControl>
@@ -122,7 +134,9 @@ const Profile = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel className="text-lg font-semibold">
+                            Email
+                          </FormLabel>
                           <FormControl>
                             <Input type="email" {...field} />
                           </FormControl>
@@ -132,12 +146,18 @@ const Profile = () => {
                     />
                     <FormField
                       control={form.control}
-                      name="phone"
+                      name="phoneNumber"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Phone</FormLabel>
+                          <FormLabel className="text-lg font-semibold">
+                            Phone
+                          </FormLabel>
                           <FormControl>
-                            <Input {...field} />
+                            <Input
+                              type="tel"
+                              placeholder="Enter your phone number"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -148,23 +168,31 @@ const Profile = () => {
                 </Form>
               ) : (
                 <div className="space-y-4">
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-6 md:grid-cols-2">
                     <div>
-                      <Label>First Name</Label>
-                      <p className="mt-1">{form.getValues("firstName")}</p>
+                      <Label className="text-lg font-semibold">
+                        First Name
+                      </Label>
+                      <p className="mt-1 text-base">
+                        {form.getValues("firstName")}
+                      </p>
                     </div>
                     <div>
-                      <Label>Last Name</Label>
-                      <p className="mt-1">{form.getValues("lastName")}</p>
+                      <Label className="text-lg font-semibold">Last Name</Label>
+                      <p className="mt-1 text-base">
+                        {form.getValues("lastName")}
+                      </p>
                     </div>
                   </div>
                   <div>
-                    <Label>Email</Label>
-                    <p className="mt-1">{form.getValues("email")}</p>
+                    <Label className="text-lg font-semibold">Email</Label>
+                    <p className="mt-1 text-base">{form.getValues("email")}</p>
                   </div>
                   <div>
-                    <Label>Phone</Label>
-                    <p className="mt-1">{form.getValues("phone")}</p>
+                    <Label className="text-lg font-semibold">Phone</Label>
+                    <p className="mt-1 text-base">
+                      {form.getValues("phoneNumber")}
+                    </p>
                   </div>
                 </div>
               )}

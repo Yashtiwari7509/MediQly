@@ -1,5 +1,4 @@
-
-import { MainLayout } from "@/components/layout/MainLayout";
+import MainLayout from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus, Bell, Clock, Pill } from "lucide-react";
@@ -27,7 +26,7 @@ const mockMedications = [
 const Medicine = () => {
   const { toast } = useToast();
 
-  const handleReminder = (medication: typeof mockMedications[0]) => {
+  const handleReminder = (medication: (typeof mockMedications)[0]) => {
     toast({
       title: "Medication Reminder",
       description: `Time to take ${medication.name} (${medication.dosage})`,

@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import userModel from "../models/user.model.js";
+import jwt from "jsonwebtoken";
 
 export async function registerUser(req, res) {
   // Validate request
@@ -9,13 +10,13 @@ export async function registerUser(req, res) {
   }
 
   const { password, email } = req.body;
-console.log(email);
+  console.log(email);
 
   // Check if user already exists
   const isUser = await userModel.findOne({ email });
   if (isUser) {
     console.log(isUser);
-    
+
     return res.status(409).json({ message: "Email already exists" }); // 409 Conflict
   }
 
@@ -70,15 +71,14 @@ export async function signInUser(req, res) {
     return res.status(200).json({
       message: "Login successful",
       token,
-      user: {
-        id: user._id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-      },
+      user,
     });
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+export const getUserProfile = async (req, res, next) => {
+  return res.status(200).json(req.user);
+};

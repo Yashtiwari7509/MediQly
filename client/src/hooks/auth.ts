@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 // Function to store token securely (You can modify this as needed)
-const setToken = (token) => {
+const setToken = (token: string) => {
   localStorage.setItem("token", token); // Prefer HTTP-only cookies if possible
 };
 
@@ -47,7 +47,19 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      queryClient.setQueryData(["currentUser"], data.user); // Store user globally
+      queryClient.setQueryData(["currentUser"], data.user); 
     },
   });
 };
+
+export const useLogout = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      await Promise.resolve(); // Mimic async behavior
+      localStorage.removeItem("token");
+      queryClient.setQueryData(["currentUser"], null);
+    },
+  });
+};
+

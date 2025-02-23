@@ -16,8 +16,8 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 import { ThemeProvider } from "./utils/theme.provider";
 import Profile from "./pages/Profile";
-import { Navigation } from "./components/layout/Navigation";
 import ChatPage from "./components/Chat";
+import { AuthProvider } from "./auth/AuthProvider";
 
 const queryClient = new QueryClient();
 
@@ -28,22 +28,23 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/health-tracker" element={<HealthTracker />} />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/preventive-health" element={<PreventiveHealth />} />
-            <Route path="/insurance" element={<Insurance />} />
-            <Route path="/symptoms" element={<Symptoms />} />
-            <Route path="/bmi" element={<BMI />} />
-            <Route path="/medicine" element={<Medicine />} />
-            <Route path="/chat" element={<ChatPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Navigation />
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/health-tracker" element={<HealthTracker />} />
+              <Route path="/appointments" element={<Appointments />} />
+              <Route path="/preventive-health" element={<PreventiveHealth />} />
+              <Route path="/insurance" element={<Insurance />} />
+              <Route path="/symptoms" element={<Symptoms />} />
+              <Route path="/bmi" element={<BMI />} />
+              <Route path="/medicine" element={<Medicine />} />
+              <Route path="/chat" element={<ChatPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>
