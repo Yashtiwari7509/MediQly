@@ -25,12 +25,13 @@ import { HeartPulse, Eye, EyeOff } from "lucide-react";
 import "../index.css";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import { useRegister } from "@/hooks/auth";
 
 const formSchema = z.object({
   email: z.string().email("Must be a valid email"),
   password: z
     .string()
-    .min(4, "Password must be at least 4 characters long")
+    .min(6, "Password must be at least 6 characters long")
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
       "Password must contain at least one uppercase letter, one lowercase letter, and one number"
@@ -72,29 +73,27 @@ const Register = () => {
       gender: undefined,
     },
   });
-
-  const mutation = useMutation({
-    mutationFn: handleRegister,
-    onSuccess: (data) => {
-      toast({
-        title: "Success",
-        description: "Account created successfully. Redirecting to login...",
-      });
-      setTimeout(() => navigate("/login"), 2000);
-    },
-    onError: (error) => {
-      console.log(error);
-      
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: (error as any).response.data.message,
-      });
-    },
-  });
+  const userRegister = useRegister();
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    mutation.mutate(values);
+    userRegister.mutate(values, {
+      onSuccess: () => {
+        toast({
+          title: "Success",
+          description: "Account created successfully. Redirecting to login...",
+        });
+        navigate("/");
+      },
+      onError: (error) => {
+        console.log(error);
+
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: (error as any).response.data.message,
+        });
+      },
+    });
   };
 
   return (
@@ -255,9 +254,9 @@ const Register = () => {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={mutation.isPending}
+                disabled={userRegister.isPending}
               >
-                {mutation.isPending ? (
+                {userRegister.isPending ? (
                   <div className="flex items-center gap-2">
                     <svg
                       className="animate-spin h-4 w-4 text-white"

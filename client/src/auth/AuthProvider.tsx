@@ -1,58 +1,95 @@
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useMemo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getToken } from "../hooks/auth";
-import api from "../utils/api";
-import { useNavigate } from "react-router-dom";
-import { profileProps } from "@/lib/user.type";
+import { useNavigate, useLocation } from "react-router-dom"; // 🔹 Added `useLocation`
+import api from "@/utils/api";
+import { getToken, getUserType } from "@/hooks/auth";
+import { profileProps, doctorProfileProps } from "@/lib/user.type";
 import { LoaderIcon } from "lucide-react";
 
 interface AuthContextType {
-  user: profileProps | null; // User can be null if not logged in
+  currentUser: profileProps | null;
+  currentDoctor: doctorProfileProps | null;
+  userType: "user" | "doctor" | null;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }) => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const location = useLocation(); // 🔹 Get current route
+  const token = getToken();
+  const userType = getUserType();
 
-  const { data: user, isLoading } = useQuery<profileProps>({
+  // 🔹 Fetch User Profile (For Users)
+  const { data: currentUser, isLoading: isUserLoading } = useQuery({
     queryKey: ["currentUser"],
     queryFn: async () => {
-      console.log(getToken());
-
-      if (!getToken()) return null; // No token means not logged in
-      console.log("result");
+      if (!token || userType !== "user") return null;
       const { data } = await api.get("/users/profile");
-      const result = queryClient.getQueryData(["currentUser"]) || data;
-      navigate("/");
-
-      return result as profileProps;
+      return data;
     },
-    staleTime: 5 * 60 * 1000, // Cache user data for 5 minutes
+    enabled: !!token && userType === "user",
+    staleTime: 5 * 60 * 1000,
   });
 
-  // Redirect if user is NOT logged in & NOT loading
-  useEffect(() => {
-    console.log(isLoading, user);
+  // 🔹 Fetch Doctor Profile (For Doctors)
+  const { data: currentDoctor, isLoading: isDoctorLoading } = useQuery({
+    queryKey: ["currentDoctor"],
+    queryFn: async () => {
+      if (!token || userType !== "doctor") return null;
+      const { data } = await api.get("/doctors/profile");
+      navigate("/");
+      return data;
+    },
+    enabled: !!token && userType === "doctor",
+    staleTime: 5 * 60 * 1000,
+  });
+console.log(currentUser, currentDoctor,'data');
 
-    if (isLoading) {
+  // 🔹 Compute Authentication State
+  const isLoading = isUserLoading || isDoctorLoading;
+  const isAuthenticated = useMemo(
+    () => !!(currentUser || currentDoctor),
+    [currentUser, currentDoctor]
+  );
+
+  // 🔹 Redirect Only on **Protected Routes**
+  useEffect(() => {
+    const isOnAuthPage =
+      location.pathname === "/login" ||
+      location.pathname === "/register" ||
+      location.pathname === "/doc-register";
+
+    if (!isLoading && !isAuthenticated && !isOnAuthPage) {
       navigate("/login");
     }
-  }, [user, isLoading]); // Only runs when user state changes
-  if (isLoading)
+  }, [isLoading, isAuthenticated, location.pathname, navigate]);
+
+  // 🔹 Show Loading While Fetching Data
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center w-screen h-[100vh]">
         <LoaderIcon className="animate-spin" />
       </div>
     );
+  }
 
   return (
-    <AuthContext.Provider value={{ user, isLoading }}>
-      {!isLoading && children}
+    <AuthContext.Provider
+      value={{ currentUser, currentDoctor, userType, isLoading }}
+    >
+      {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+// Hook to access auth context
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

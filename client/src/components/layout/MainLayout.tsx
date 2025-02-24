@@ -32,7 +32,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user, isLoading } = useAuth();
+  const { currentDoctor, currentUser, userType, isLoading } = useAuth();
   const logoutFun = useLogout();
 
   useEffect(() => {
@@ -125,8 +125,12 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                         alt="@shadcn"
                       />
                       <AvatarFallback>
-                        {user?.firstName.charAt(0)}
-                        {user?.lastName.charAt(0)}
+                        {userType === "user"
+                          ? currentUser?.firstName.charAt(0)
+                          : currentDoctor?.firstName.charAt(0)}
+                        {userType === "user"
+                          ? currentUser?.lastName.charAt(0)
+                          : currentDoctor?.lastName.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -135,10 +139,17 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">
-                        {user?.firstName} {user?.lastName}
+                        {userType === "user"
+                          ? currentUser?.firstName
+                          : currentDoctor?.firstName}
+                        {userType === "user"
+                          ? currentUser?.lastName
+                          : currentDoctor?.lastName}
                       </p>
                       <p className="text-xs leading-none text-muted-foreground">
-                        {user?.email}
+                        {userType === "user"
+                          ? currentUser?.email
+                          : currentDoctor?.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>

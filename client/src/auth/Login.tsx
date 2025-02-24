@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff, HeartPulse } from "lucide-react";
+import { Eye, EyeOff, HeartPulse, User, Stethoscope } from "lucide-react";
 import "../index.css";
 import { useLogin } from "../hooks/auth"; // Import useLogin hook
 
@@ -27,6 +27,7 @@ const Login = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [loginType, setLoginType] = useState<"user" | "doctor">("user"); // New: Toggle between User & Doctor
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,36 +37,41 @@ const Login = () => {
     },
   });
 
-  // ✅ Use the `useLogin` hook
+  // ✅ Use the `useLogin` hook and determine which login type to use
   const loginMutation = useLogin();
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    loginMutation.mutate(values, {
-      onSuccess: (data) => {
-        toast({
-          title: "Success",
-          description: "Logged in successfully",
-        });
-        navigate("/"); // Navigate to home after login
-      },
-      onError: (error) => {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: (error as any)?.response?.data.message || "Login failed",
-        });
-      },
-    });
+  const onSubmit = (values: { email: string; password: string }) => {
+    loginMutation.mutate(
+      { credentials: values, loginType },
+      {
+        onSuccess: () => {
+          navigate("/");
+          toast({
+            title: "Success",
+            description: `${
+              loginType === "user" ? "User" : "Doctor"
+            } logged in successfully`,
+          });
+        },
+        onError: (error) => {
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description:
+              (error as any)?.response?.data.message || "Login failed",
+          });
+        },
+      }
+    );
   };
 
   return (
     <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+      {/* Left Side with Background */}
       <div
         style={{ backgroundImage: `url("../../aiH.jpg")` }}
         className="relative hidden h-full bg-cover bg-center flex-col bg-muted p-10 text-white dark:border-r lg:flex"
       >
-      
-        <div className="absolute inset-0" />
         <div className="relative z-20 flex items-center gap-2 text-lg font-bold primary-grad">
           <HeartPulse className="h-6 w-6" />
           MediQly
@@ -80,19 +86,42 @@ const Login = () => {
           </blockquote>
         </div>
       </div>
+
+      {/* Right Side Login Form */}
       <div className="p-4 lg:p-8 h-full flex items-center">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+          {/* Header */}
           <div className="flex flex-col space-y-2 text-center">
             <h1 className="text-2xl font-semibold tracking-tight">
-              Welcome back
+              {loginType === "user" ? "User Login" : "Doctor Login"}
             </h1>
             <p className="text-sm text-muted-foreground">
-              Enter your credentials to sign in to your account
+              Enter your credentials to sign in as a {loginType}.
             </p>
           </div>
 
+          {/* User & Doctor Toggle Buttons */}
+          <div className="flex gap-2 justify-center">
+            <Button
+              variant={loginType === "user" ? "default" : "outline"}
+              onClick={() => setLoginType("user")}
+            >
+              <User className="h-4 w-4 mr-2" />
+              User
+            </Button>
+            <Button
+              variant={loginType === "doctor" ? "default" : "outline"}
+              onClick={() => setLoginType("doctor")}
+            >
+              <Stethoscope className="h-4 w-4 mr-2" />
+              Doctor
+            </Button>
+          </div>
+
+          {/* Login Form */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              {/* Email Field */}
               <FormField
                 control={form.control}
                 name="email"
@@ -110,7 +139,8 @@ const Login = () => {
                   </FormItem>
                 )}
               />
-              
+
+              {/* Password Field */}
               <FormField
                 control={form.control}
                 name="password"
@@ -143,6 +173,8 @@ const Login = () => {
                   </FormItem>
                 )}
               />
+
+              {/* Submit Button */}
               <Button
                 type="submit"
                 className="w-full"
@@ -153,13 +185,14 @@ const Login = () => {
             </form>
           </Form>
 
+          {/* Sign-Up Link */}
           <div className="text-center text-sm text-muted-foreground">
             Don't have an account?
             <Link
-              to="/register"
+              to={loginType === "user" ? "/register" : "/doc-register"}
               className="underline underline-offset-4 hover:text-primary"
             >
-              Sign up
+              Sign up as a {loginType}
             </Link>
           </div>
         </div>

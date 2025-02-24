@@ -33,17 +33,22 @@ const profileSchema = z.object({
 const Profile = () => {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
-  const queryClient = useQueryClient();
-  const { user, isLoading } = useAuth();
-  console.log(user);
+
+  const { currentDoctor, currentUser, isLoading, userType } = useAuth();
+  console.log(currentDoctor, currentUser);
 
   const form = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      firstName: user?.firstName,
-      lastName: user?.lastName,
-      email: user?.email,
-      phoneNumber: user?.phoneNumber,
+      firstName:
+        userType === "user" ? currentUser?.firstName : currentDoctor?.firstName,
+      lastName:
+        userType === "user" ? currentUser?.lastName : currentDoctor?.lastName,
+      email: userType === "user" ? currentUser?.email : currentDoctor?.email,
+      phoneNumber:
+        userType === "user"
+          ? currentUser?.phoneNumber
+          : currentDoctor?.phoneNumber,
     },
   });
 

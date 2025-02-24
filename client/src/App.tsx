@@ -18,6 +18,8 @@ import { ThemeProvider } from "./utils/theme.provider";
 import Profile from "./pages/Profile";
 import ChatPage from "./components/Chat";
 import { AuthProvider } from "./auth/AuthProvider";
+import ChatCall from "./pages/ChatCall";
+import DocRegister from "./auth/DocRegister";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/doc-register" element={<DocRegister />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/health-tracker" element={<HealthTracker />} />
               <Route path="/appointments" element={<Appointments />} />
@@ -41,7 +44,7 @@ const App = () => (
               <Route path="/symptoms" element={<Symptoms />} />
               <Route path="/bmi" element={<BMI />} />
               <Route path="/medicine" element={<Medicine />} />
-              <Route path="/chat" element={<ChatPage />} />
+              <Route path="/chat" element={<ChatCall />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>

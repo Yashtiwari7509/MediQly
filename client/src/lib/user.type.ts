@@ -19,4 +19,10 @@ interface profileProps {
   dob?: string;
   gender?: string;
 }
-export type { UserProps, cardsProps, profileProps };
+interface doctorProfileProps {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber?: string;
+}
+export type { UserProps, cardsProps, profileProps, doctorProfileProps };

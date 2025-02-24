@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import "../index.css";
 import ThreeScene from "@/components/GodRays";
 import { cardsProps, profileProps, UserProps } from "@/lib/user.type";
+import { useAuth } from "@/auth/AuthProvider";
 
 const healthCard = [
   {
@@ -42,9 +43,7 @@ const healthCard = [
   },
 ];
 const Index = () => {
-  const queryClient = useQueryClient();
-  const user: profileProps = queryClient.getQueryData(["currentUser"]);
-  console.log(user);
+  const { currentDoctor, currentUser, userType, isLoading } = useAuth();
 
   return (
     <MainLayout>
@@ -55,7 +54,10 @@ const Index = () => {
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="text-3xl font-bold primary-grad">
-                  Welcome back, {user?.firstName}
+                  Welcome back,{" "}
+                  {userType === "user"
+                    ? currentUser?.firstName
+                    : currentDoctor?.firstName}
                 </h1>
                 <p className="text-gray-500 mt-1">
                   Here's your health overview
