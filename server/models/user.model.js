@@ -97,6 +97,9 @@ const UserSchema = new Schema(
       },
     ],
 
+    isOnline: { type: Boolean, default: false }, // Tracks if doctor is online
+    lastActive: { type: Date, default: Date.now },
+
     // Chatbot Conversations (Stored in a Separate Collection but Referenced)
     chatbotSessions: [
       { type: mongoose.Schema.Types.ObjectId, ref: "ChatbotSession" },
@@ -129,4 +132,7 @@ UserSchema.methods.comparePassword = async function (enteredPassword) {
 UserSchema.statics.hashPassword = async function (password) {
   return await bcrypt.hash(password, 10);
 };
+
+// UserSchema.index({ location: "2dsphere" });
+
 export default mongoose.model("User", UserSchema);

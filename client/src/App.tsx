@@ -16,9 +16,9 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 import { ThemeProvider } from "./utils/theme.provider";
 import Profile from "./pages/Profile";
-import ChatPage from "./components/Chat";
+// import ChatPage from "./components/Chat";
 import { AuthProvider } from "./auth/AuthProvider";
-import ChatCall from "./pages/ChatCall";
+import ChatCall from "./pages/chat/LatestVideoCall";
 import DocRegister from "./auth/DocRegister";
 
 const queryClient = new QueryClient();

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,30 +40,33 @@ const Login = () => {
   // ✅ Use the `useLogin` hook and determine which login type to use
   const loginMutation = useLogin();
 
-  const onSubmit = (values: { email: string; password: string }) => {
-    loginMutation.mutate(
-      { credentials: values, loginType },
-      {
-        onSuccess: () => {
-          navigate("/");
-          toast({
-            title: "Success",
-            description: `${
-              loginType === "user" ? "User" : "Doctor"
-            } logged in successfully`,
-          });
-        },
-        onError: (error) => {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description:
-              (error as any)?.response?.data.message || "Login failed",
-          });
-        },
-      }
-    );
-  };
+  const onSubmit = useCallback(
+    () => (values: { email: string; password: string }) => {
+      loginMutation.mutate(
+        { credentials: values, loginType },
+        {
+          onSuccess: () => {
+            toast({
+              title: "Success",
+              description: `${
+                loginType === "user" ? "User" : "Doctor"
+              } logged in successfully. Redirecting... to home Page`,
+            });
+            navigate("/");
+          },
+          onError: (error) => {
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description:
+                (error as any)?.response?.data.message || "Login failed",
+            });
+          },
+        }
+      );
+    },
+    [loginMutation, loginType, toast, navigate]
+  );
 
   return (
     <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">

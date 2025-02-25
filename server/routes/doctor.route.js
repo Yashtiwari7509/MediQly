@@ -4,6 +4,8 @@ import {
   registerDoctor,
   signInDoctor,
   getDoctorProfile,
+  getAvailableDoctors,
+  updateDoctorStatus,
 } from "../controller/doctor.controller.js";
 import { authDoctor } from "../middleware/auth.middleware.js";
 
@@ -49,5 +51,9 @@ router.post(
 
 // Get Doctor Profile (Protected Route)
 router.get("/profile", authDoctor, getDoctorProfile);
+
+router.put("/status", updateDoctorStatus);
+
+router.get("/available", getAvailableDoctors);
 
 export default router;

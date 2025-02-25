@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import MainLayout from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,7 +14,11 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Phone, Video, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import MainLayout from "@/components/layout/MainLayout";
+import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/utils/api";
+import { useAuth } from "@/auth/AuthProvider";
+import { doctorProfileProps } from "@/lib/user.type";
 
 interface Doctor {
   id: string;
@@ -30,37 +35,24 @@ interface Message {
   timestamp: Date;
 }
 
-const mockDoctors: Doctor[] = [
-  {
-    id: "1",
-    name: "Dr. Sarah Johnson",
-    specialty: "Cardiologist",
-    avatar: "https://i.pravatar.cc/150?u=1",
-    status: "available",
-  },
-  {
-    id: "2",
-    name: "Dr. Michael Chen",
-    specialty: "Pediatrician",
-    avatar: "https://i.pravatar.cc/150?u=2",
-    status: "available",
-  },
-  {
-    id: "3",
-    name: "Dr. Emily Williams",
-    specialty: "Dermatologist",
-    avatar: "https://i.pravatar.cc/150?u=3",
-    status: "busy",
-  },
-];
-
-const ChatCall = () => {
+const Chat = () => {
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isVideoCall, setIsVideoCall] = useState(false);
   const { toast } = useToast();
+  const { userType, currentDoctor, currentUser } = useAuth();
 
+  const { data: doctors = [] } = useQuery({
+    queryKey: ["doctors"],
+    queryFn: async () => {
+      const { data } = await api.get("/doctors/available");
+      console.log(data);
+
+      return data;
+    },
+    enabled: userType === "user",
+  });
   const handleSendMessage = () => {
     if (!newMessage.trim()) return;
 
@@ -86,11 +78,45 @@ const ChatCall = () => {
     }, 1000);
   };
 
-  const startVideoCall = () => {
+  const startVideoCall = async () => {
+    if (!selectedDoctor) return;
+
     setIsVideoCall(true);
     toast({
       title: "Starting video call",
       description: "Connecting to doctor...",
+    });
+
+    const appID = 263201994; // Replace with your ZegoCloud App ID
+    const serverSecret = "6bb43443414d42bd8b1ae4a008f3e721"; // Replace with your Server Secret
+    const roomID = `doctor-${selectedDoctor.id}`;
+    console.log(roomID);
+    
+    const userID = Date.now().toString();
+    const userName = "Patient";
+
+    const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+      appID,
+      serverSecret,
+      roomID,
+      userID,
+      userName
+    );
+
+    const zp = ZegoUIKitPrebuilt.create(kitToken);
+
+    zp.joinRoom({
+      container: document.querySelector("#video-container")!,
+      sharedLinks: [
+        {
+          name: "Join via link",
+          url: window.location.origin + "/room/" + roomID,
+        },
+      ],
+      scenario: {
+        mode: ZegoUIKitPrebuilt.OneONoneCall,
+      },
+      showPreJoinView: false,
     });
   };
 
@@ -106,7 +132,7 @@ const ChatCall = () => {
     <MainLayout>
       <div className="container mx-auto animate-in">
         <h1 className="mb-6 text-2xl font-bold">Chat with Doctors</h1>
-        
+
         <div className="grid gap-6 md:grid-cols-[300px_1fr]">
           {/* Doctors List */}
           <Card className="h-[calc(100vh-200px)]">
@@ -115,39 +141,49 @@ const ChatCall = () => {
             </CardHeader>
             <CardContent className="p-0">
               <ScrollArea className="h-[calc(100vh-280px)]">
-                {mockDoctors.map((doctor) => (
+                {doctors.data?.map((doctor: doctorProfileProps) => (
                   <div
-                    key={doctor.id}
+                    key={doctor._id}
                     className={`flex cursor-pointer items-center gap-3 border-b p-4 transition-colors hover:bg-accent ${
-                      selectedDoctor?.id === doctor.id ? "bg-accent" : ""
+                      selectedDoctor?.id === doctor._id ? "bg-accent" : ""
                     }`}
-                    onClick={() => setSelectedDoctor(doctor)}
+                    onClick={() =>
+                      setSelectedDoctor({
+                        id: doctor._id,
+                        name: `${doctor.firstName} ${doctor.lastName}`,
+                        specialty: doctor.specialization,
+                        avatar: doctor.firstName.charAt(0),
+                        status: doctor.isOnline ? "available" : "offline",
+                      })
+                    }
                   >
                     <div className="relative">
                       <Avatar className="h-10 w-10">
-                        <AvatarImage src={doctor.avatar} />
-                        <AvatarFallback>{doctor.name[0]}</AvatarFallback>
+                        <Avatar />
                       </Avatar>
                       <span
                         className={`absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-background ${
-                          doctor.status === "available"
+                          doctor.isOnline === true
                             ? "bg-green-500"
-                            : doctor.status === "busy"
-                            ? "bg-yellow-500"
-                            : "bg-gray-500"
+                            : "bg-yellow-500"
                         }`}
                       />
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium">{doctor.name}</p>
+                      <p className="font-medium">
+                        {doctor.firstName}
+                        {doctor.lastName}
+                      </p>
                       <p className="text-sm text-muted-foreground">
-                        {doctor.specialty}
+                        {doctor.specialization}
                       </p>
                     </div>
                     <Badge
-                      variant={doctor.status === "available" ? "default" : "secondary"}
+                      variant={
+                        doctor.isOnline === true ? "default" : "secondary"
+                      }
                     >
-                      {doctor.status}
+                      {doctor.isOnline === true ? "Online" : "Offline"}
                     </Badge>
                   </div>
                 ))}
@@ -164,7 +200,9 @@ const ChatCall = () => {
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={selectedDoctor.avatar} />
-                        <AvatarFallback>{selectedDoctor.name[0]}</AvatarFallback>
+                        <AvatarFallback>
+                          {selectedDoctor.name[0]}
+                        </AvatarFallback>
                       </Avatar>
                       <div>
                         <CardTitle>{selectedDoctor.name}</CardTitle>
@@ -203,7 +241,9 @@ const ChatCall = () => {
                         <div
                           key={message.id}
                           className={`flex ${
-                            message.sender === "user" ? "justify-end" : "justify-start"
+                            message.sender === "user"
+                              ? "justify-end"
+                              : "justify-start"
                           }`}
                         >
                           <div
@@ -255,24 +295,13 @@ const ChatCall = () => {
           <DialogContent className="h-[80vh] max-w-4xl">
             <DialogHeader>
               <DialogTitle className="flex items-center justify-between">
-                <span>
-                  Video Call with {selectedDoctor?.name}
-                </span>
+                <span>Video Call with {selectedDoctor?.name}</span>
                 <Button variant="destructive" onClick={endVideoCall}>
                   End Call
                 </Button>
               </DialogTitle>
             </DialogHeader>
-            <div className="relative flex h-full items-center justify-center rounded-lg bg-muted">
-              <div className="absolute bottom-4 right-4 h-32 w-48 overflow-hidden rounded-lg bg-background shadow-lg">
-                <video
-                  className="h-full w-full object-cover"
-                  src="https://assets.mixkit.co/videos/preview/mixkit-young-woman-talking-on-video-call-6762-large.mp4"
-                  autoPlay
-                  loop
-                  muted
-                />
-              </div>
+            <div id="video-container" className="h-full w-full">
               <div className="text-center">
                 <p className="text-muted-foreground">Connecting to doctor...</p>
               </div>
@@ -284,4 +313,4 @@ const ChatCall = () => {
   );
 };
 
-export default ChatCall;
+export default Chat;

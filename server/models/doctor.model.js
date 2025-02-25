@@ -18,7 +18,6 @@ const DoctorSchema = new Schema(
     experience: { type: Number, required: true }, // Years of experience
     qualifications: [{ type: String, required: true }], // List of degrees/certifications
 
-
     // Availability & Appointments
     availability: [
       {
@@ -63,19 +62,15 @@ const DoctorSchema = new Schema(
       },
     ],
 
+    isOnline: { type: Boolean, default: false }, // Tracks if doctor is online
+    lastActive: { type: Date, default: Date.now },
+
     // System Fields
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
-
-// Middleware to hash password before saving
-// DoctorSchema.pre("save", async function (next) {
-//   if (!this.isModified("password")) return next();
-//   this.password = await bcrypt.hash(this.password, 10);
-//   next();
-// });
 
 // Middleware to update 'updatedAt' field
 DoctorSchema.pre("save", function (next) {
@@ -98,4 +93,13 @@ DoctorSchema.statics.hashPassword = async function (password) {
   return await bcrypt.hash(password, 10);
 };
 
+// DoctorSchema.index({ location: "2dsphere" });
+
 export default mongoose.model("Doctor", DoctorSchema);
+
+// Middleware to hash password before saving
+// DoctorSchema.pre("save", async function (next) {
+//   if (!this.isModified("password")) return next();
+//   this.password = await bcrypt.hash(this.password, 10);
+//   next();
+// });

@@ -4,6 +4,7 @@ import {
   getUserProfile,
   registerUser,
   signInUser,
+  updateUserStatus,
 } from "../controller/user.controller.js";
 import { authUser } from "../middleware/auth.middleware.js";
 
@@ -45,5 +46,8 @@ router.post(
 );
 
 router.get("/profile", authUser, getUserProfile);
+
+// Update user online status
+router.put("/status", updateUserStatus);
 
 export default router;
