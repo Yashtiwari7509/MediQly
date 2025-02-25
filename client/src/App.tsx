@@ -20,6 +20,7 @@ import Profile from "./pages/Profile";
 import { AuthProvider } from "./auth/AuthProvider";
 import ChatCall from "./pages/chat/LatestVideoCall";
 import DocRegister from "./auth/DocRegister";
+import AiDoctor from "./pages/AiDoctor";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
               <Route path="/bmi" element={<BMI />} />
               <Route path="/medicine" element={<Medicine />} />
               <Route path="/chat" element={<ChatCall />} />
+              <Route path="/ai-doctor" element={<AiDoctor />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
