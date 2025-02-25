@@ -9,6 +9,7 @@ import {
   MessageSquare,
   Pill,
   Shield,
+  Bot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ const sidebarItems = [
   { icon: Activity, label: "Symptoms", path: "/symptoms" },
   { icon: LineChart, label: "BMI Index", path: "/bmi" },
   { icon: Pill, label: "Medicine", path: "/medicine" },
+  { icon: Bot, label: "AI Doctor", path: "/ai-doctor" },
 ];
 
 export function Sidebar() {
