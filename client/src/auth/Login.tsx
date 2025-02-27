@@ -40,8 +40,8 @@ const Login = () => {
   // ✅ Use the `useLogin` hook and determine which login type to use
   const loginMutation = useLogin();
 
-  const onSubmit = useCallback(
-    () => (values: { email: string; password: string }) => {
+  const onSubmit = 
+    (values: { email: string; password: string }) => {
       loginMutation.mutate(
         { credentials: values, loginType },
         {
@@ -64,9 +64,9 @@ const Login = () => {
           },
         }
       );
-    },
-    [loginMutation, loginType, toast, navigate]
-  );
+    }
+
+  
 
   return (
     <div className="container relative min-h-screen flex-col items-center justify-center grid lg:max-w-none lg:grid-cols-2 lg:px-0">

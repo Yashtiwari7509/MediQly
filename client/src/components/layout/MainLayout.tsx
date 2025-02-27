@@ -19,6 +19,7 @@ import { useLogout } from "@/hooks/auth";
 import { useAuth } from "@/auth/AuthProvider";
 import exp from "constants";
 import { Navigation } from "./Navigation";
+import VoiceNavigation from '../VoiceNavigation';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -169,6 +170,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         <div className="container mx-auto p-6 pb-20 md:pb-6">{children}</div>
       </main>
       <Navigation />
+      <VoiceNavigation />
     </div>
   );
 };
