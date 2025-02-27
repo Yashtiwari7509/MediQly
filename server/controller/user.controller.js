@@ -80,6 +80,8 @@ export async function signInUser(req, res) {
 }
 
 export const getUserProfile = async (req, res, next) => {
+  console.log('profile called');
+  
   return res.status(200).json(req.user);
 };
 
@@ -145,6 +147,47 @@ export const updateUserStatus = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error while updating status.",
+      error: error.message,
+    });
+  }
+};
+
+export const getAvailableUsers = async (req, res) => {
+  try {
+    const { isOnline } = req.query;
+
+    // Build the query object
+    const query = {};
+
+    // Add online status to query if provided
+    if (isOnline !== undefined) {
+      query.isOnline = isOnline === "true";
+    }
+
+    // Find users matching the criteria
+    const users = await userModel
+      .find(query)
+      .select({
+        firstName: 1,
+        lastName: 1,
+        phoneNumber: 1,
+        isOnline: 1,
+        lastActive: 1,
+        medicalHistory: 1,
+        appointments: 1,
+      })
+      .sort({ lastActive: -1 }); // Sort by last active (most recent first)
+
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      data: users,
+    });
+  } catch (error) {
+    console.error("Error finding users:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching users",
       error: error.message,
     });
   }

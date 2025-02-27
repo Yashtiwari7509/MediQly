@@ -4,7 +4,7 @@ interface UserProps {
   firstName: string;
   lastName: string;
   email: string;
-  id: string;
+  _id: string;
 }
 interface cardsProps {
   title: string;

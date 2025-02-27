@@ -2,8 +2,8 @@ import { Sidebar } from "./Sidebar";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Menu, Moon, Sun, X, LogOut } from "lucide-react";
-import { useEffect, useState, useMemo, memo } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import {  memo } from "react";
+// import { useIsMobile } from "@/hooks/use-mobile";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -17,7 +17,7 @@ import {
 import { useTheme } from "@/utils/theme.provider";
 import { useLogout } from "@/hooks/auth";
 import { useAuth } from "@/auth/AuthProvider";
-import exp from "constants";
+// import exp from "constants";
 import { Navigation } from "./Navigation";
 
 interface MainLayoutProps {
@@ -25,29 +25,20 @@ interface MainLayoutProps {
 }
 
 const MainLayout = ({ children }: MainLayoutProps) => {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
-  const isMobile = useIsMobile();
+
   const { toast } = useToast();
   const { setTheme, theme } = useTheme();
   const navigate = useNavigate();
-  const location = useLocation();
+
 
   const { currentDoctor, currentUser, userType, isLoading } = useAuth();
-  const logoutFun = useLogout();
+  const logoutFun = useLogout()
 
-  useEffect(() => {
-    if (isMobile) {
-      setSidebarOpen(false);
-    }
-  }, [location.pathname, isMobile]); // Ensure sidebar closes only on mobile when changing route
+
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
-  };
-
-  const toggleSidebar = () => {
-    setSidebarOpen((prev) => !prev);
-  };
+  }
 
   const handleLogout = () => {
     logoutFun.mutate(undefined, {
@@ -61,47 +52,21 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     });
   };
 
-  // Memoizing Sidebar to prevent unnecessary renders
-  const memoizedSidebar = useMemo(() => <Sidebar />, []);
 
   return (
     <div className="flex min-h-screen w-full">
       {/* Overlay when Sidebar is open on mobile */}
-      {isMobile && isSidebarOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm transition-all"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <div
-        className={`fixed z-40 h-full transition-transform duration-300 md:relative md:translate-x-0 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="absolute right-4 top-4 z-50 md:hidden">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-white hover:bg-white/20"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
-        {memoizedSidebar}
-      </div>
+        <Sidebar />
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto md:ml-64">
         <div className="border-b bg-background">
           <div className="container flex h-16 items-center px-4">
             <Button
               variant="ghost"
               size="icon"
               className="mr-2 md:hidden"
-              onClick={toggleSidebar}
+              // onClick={toggleSidebar}
             >
               <Menu className="h-5 w-5" />
             </Button>

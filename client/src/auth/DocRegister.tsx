@@ -54,7 +54,8 @@ const formSchema = z.object({
     "General Practitioner",
     "Other",
   ]),
-  experience: z.number().int().min(0, "Experience must be a positive number"),
+  experience: z
+    .preprocess((val) => Number(val), z.number().min(0, "Experience must be a positive number")),
   qualifications: z.array(
     z.string().min(2, "Qualification must be at least 2 characters long")
   ),
@@ -85,7 +86,7 @@ const Register = () => {
       lastName: "",
       phoneNumber: "",
       specialization: undefined,
-      experience: 0,
+      experience: undefined,
       qualifications: [""],
     },
   });

@@ -5,6 +5,7 @@ import api from "@/utils/api";
 import { getToken, getUserType } from "@/hooks/auth";
 import { profileProps, doctorProfileProps } from "@/lib/user.type";
 import { LoaderIcon } from "lucide-react";
+import "@/App.css";
 
 interface AuthContextType {
   currentUser: profileProps | null;
@@ -46,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     enabled: !!token && userType === "doctor",
     staleTime: 5 * 60 * 1000,
   });
-console.log(currentUser, currentDoctor,'data');
+  console.log(currentUser, currentDoctor, "data calling");
 
   // 🔹 Compute Authentication State
   const isLoading = isUserLoading || isDoctorLoading;
@@ -57,21 +58,18 @@ console.log(currentUser, currentDoctor,'data');
 
   // 🔹 Redirect Only on **Protected Routes**
   useEffect(() => {
-    const isOnAuthPage =
-      location.pathname === "/login" ||
-      location.pathname === "/register" ||
-      location.pathname === "/doc-register";
+    console.log("render auth provider");
 
-    if (!isLoading && !isAuthenticated && !isOnAuthPage) {
+    if (!isLoading && !isAuthenticated) {
       navigate("/login");
     }
-  }, [isLoading, isAuthenticated, location.pathname, navigate]);
+  }, [isLoading, isAuthenticated, navigate]);
 
   // 🔹 Show Loading While Fetching Data
   if (isLoading) {
     return (
       <div className="flex justify-center items-center w-screen h-[100vh]">
-        <LoaderIcon className="animate-spin" />
+        <span className="loader"></span>
       </div>
     );
   }

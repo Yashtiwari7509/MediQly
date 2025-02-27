@@ -133,6 +133,7 @@ UserSchema.statics.hashPassword = async function (password) {
   return await bcrypt.hash(password, 10);
 };
 
-// UserSchema.index({ location: "2dsphere" });
 
 export default mongoose.model("User", UserSchema);
+
+// UserSchema.index({ location: "2dsphere" });

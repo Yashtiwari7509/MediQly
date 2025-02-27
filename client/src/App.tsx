@@ -18,7 +18,7 @@ import { ThemeProvider } from "./utils/theme.provider";
 import Profile from "./pages/Profile";
 // import ChatPage from "./components/Chat";
 import { AuthProvider } from "./auth/AuthProvider";
-import ChatCall from "./pages/chat/LatestVideoCall";
+import ChatCall from "./pages/chat/VideoChat";
 import DocRegister from "./auth/DocRegister";
 import AiDoctor from "./pages/AiDoctor";
 
@@ -31,25 +31,107 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <AuthProvider>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/doc-register" element={<DocRegister />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/health-tracker" element={<HealthTracker />} />
-              <Route path="/appointments" element={<Appointments />} />
-              <Route path="/preventive-health" element={<PreventiveHealth />} />
-              <Route path="/insurance" element={<Insurance />} />
-              <Route path="/symptoms" element={<Symptoms />} />
-              <Route path="/bmi" element={<BMI />} />
-              <Route path="/medicine" element={<Medicine />} />
-              <Route path="/chat" element={<ChatCall />} />
-              <Route path="/ai-doctor" element={<AiDoctor />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthProvider>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <AuthProvider>
+                  <Index />
+                </AuthProvider>
+              }
+            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/doc-register" element={<DocRegister />} />
+            <Route
+              path="/profile"
+              element={
+                <AuthProvider>
+                  <Profile />
+                </AuthProvider>
+              }
+            />
+            <Route
+              path="/health-tracker"
+              element={
+                <AuthProvider>
+                  <HealthTracker />
+                </AuthProvider>
+              }
+            />
+            <Route
+              path="/appointments"
+              element={
+                <AuthProvider>
+                  <Appointments />
+                </AuthProvider>
+              }
+            />
+            <Route
+              path="/preventive-health"
+              element={
+                <AuthProvider>
+                  <PreventiveHealth />
+                </AuthProvider>
+              }
+            />
+            <Route
+              path="/insurance"
+              element={
+                <AuthProvider>
+                  <Insurance />
+                </AuthProvider>
+              }
+            />
+            <Route
+              path="/symptoms"
+              element={
+                <AuthProvider>
+                  <Symptoms />
+                </AuthProvider>
+              }
+            />
+            <Route
+              path="/bmi"
+              element={
+                <AuthProvider>
+                  <BMI />
+                </AuthProvider>
+              }
+            />
+            <Route
+              path="/medicine"
+              element={
+                <AuthProvider>
+                  <Medicine />
+                </AuthProvider>
+              }
+            />
+            <Route
+              path="/chat"
+              element={
+                <AuthProvider>
+                  <ChatCall />
+                </AuthProvider>
+              }
+            />
+            <Route
+              path="/ai-doctor"
+              element={
+                <AuthProvider>
+                  <AiDoctor />
+                </AuthProvider>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <AuthProvider>
+                  <NotFound />
+                </AuthProvider>
+              }
+            />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>

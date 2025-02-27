@@ -1,6 +1,7 @@
 import express from "express";
 import { body } from "express-validator";
 import {
+  getAvailableUsers,
   getUserProfile,
   registerUser,
   signInUser,
@@ -49,5 +50,7 @@ router.get("/profile", authUser, getUserProfile);
 
 // Update user online status
 router.put("/status", updateUserStatus);
+
+router.get("/available", getAvailableUsers);
 
 export default router;

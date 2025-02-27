@@ -30,7 +30,7 @@ const Appointments = () => {
       <div className="animate-in ">
         <div className="mb-8 gap-4 flex flex-col sm:flex-row items-center justify-between">
           <h1 className="text-3xl font-bold primary-grad">Appointments</h1>
-          <Button>
+          <Button className="w-full sm:w-auto hover:bg-primary/80">
             <Plus className="mr-2 h-4 w-4" /> New Appointment
           </Button>
         </div>
