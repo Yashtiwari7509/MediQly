@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import { ThemeProvider } from "./utils/theme.provider";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import Profile from "./pages/Profile";
 // import ChatPage from "./components/Chat";
 import { AuthProvider } from "./auth/AuthProvider";
@@ -26,115 +27,120 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <AuthProvider>
-                  <Index />
-                </AuthProvider>
-              }
-            />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/doc-register" element={<DocRegister />} />
-            <Route
-              path="/profile"
-              element={
-                <AuthProvider>
-                  <Profile />
-                </AuthProvider>
-              }
-            />
-            <Route
-              path="/health-tracker"
-              element={
-                <AuthProvider>
-                  <HealthTracker />
-                </AuthProvider>
-              }
-            />
-            <Route
-              path="/appointments"
-              element={
-                <AuthProvider>
-                  <Appointments />
-                </AuthProvider>
-              }
-            />
-            <Route
-              path="/preventive-health"
-              element={
-                <AuthProvider>
-                  <PreventiveHealth />
-                </AuthProvider>
-              }
-            />
-            <Route
-              path="/insurance"
-              element={
-                <AuthProvider>
-                  <Insurance />
-                </AuthProvider>
-              }
-            />
-            <Route
-              path="/symptoms"
-              element={
-                <AuthProvider>
-                  <Symptoms />
-                </AuthProvider>
-              }
-            />
-            <Route
-              path="/bmi"
-              element={
-                <AuthProvider>
-                  <BMI />
-                </AuthProvider>
-              }
-            />
-            <Route
-              path="/medicine"
-              element={
-                <AuthProvider>
-                  <Medicine />
-                </AuthProvider>
-              }
-            />
-            <Route
-              path="/chat"
-              element={
-                <AuthProvider>
-                  <ChatCall />
-                </AuthProvider>
-              }
-            />
-            <Route
-              path="/ai-doctor"
-              element={
-                <AuthProvider>
-                  <AiDoctor />
-                </AuthProvider>
-              }
-            />
-            <Route
-              path="*"
-              element={
-                <AuthProvider>
-                  <NotFound />
-                </AuthProvider>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
+    <GoogleOAuthProvider
+      clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
+      onScriptLoadError={() => console.error("Google Script failed to load")}
+    >
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <AuthProvider>
+                    <Index />
+                  </AuthProvider>
+                }
+              />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/doc-register" element={<DocRegister />} />
+              <Route
+                path="/profile"
+                element={
+                  <AuthProvider>
+                    <Profile />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/health-tracker"
+                element={
+                  <AuthProvider>
+                    <HealthTracker />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/appointments"
+                element={
+                  <AuthProvider>
+                    <Appointments />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/preventive-health"
+                element={
+                  <AuthProvider>
+                    <PreventiveHealth />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/insurance"
+                element={
+                  <AuthProvider>
+                    <Insurance />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/symptoms"
+                element={
+                  <AuthProvider>
+                    <Symptoms />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/bmi"
+                element={
+                  <AuthProvider>
+                    <BMI />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/medicine"
+                element={
+                  <AuthProvider>
+                    <Medicine />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/chat"
+                element={
+                  <AuthProvider>
+                    <ChatCall />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/ai-doctor"
+                element={
+                  <AuthProvider>
+                    <AiDoctor />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="*"
+                element={
+                  <AuthProvider>
+                    <NotFound />
+                  </AuthProvider>
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
+    </GoogleOAuthProvider>
   </QueryClientProvider>
 );
 
