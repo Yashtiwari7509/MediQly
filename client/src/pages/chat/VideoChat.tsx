@@ -505,11 +505,11 @@ const Chat = () => {
                                 "No messages yet"}
                             </p>
                           </div>
-                          {otherParticipant?.unreadCount > 0 && (
+                          {/* {otherParticipant?.unreadCount > 0 && (
                             <Badge variant="destructive">
                               {otherParticipant.unreadCount}
                             </Badge>
-                          )}
+                          )} */}
                         </div>
                       );
                     })}

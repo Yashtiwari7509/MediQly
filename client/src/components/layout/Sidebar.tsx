@@ -12,6 +12,7 @@ import {
   Bot,
   Menu,
   X,
+  Video,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ const sidebarItems = [
   { icon: LineChart, label: "BMI Index", path: "/bmi" },
   { icon: Pill, label: "Medicine", path: "/medicine" },
   { icon: Bot, label: "AI Doctor", path: "/ai-doctor" },
+  { icon: Video, label: "Feed", path: "/feed" },
 ];
 
 export function Sidebar() {
@@ -115,7 +117,10 @@ export function Sidebar() {
         {/* Chat with Doctor */}
         <div className="border-t p-4">
           <Button asChild className="w-full" variant="outline">
-            <Link to="/chat" className="flex items-center gap-2 hover:bg-primary">
+            <Link
+              to="/chat"
+              className="flex items-center gap-2 hover:bg-primary"
+            >
               <MessageSquare className="h-4 w-4" />
               Chat with Doctor
             </Link>

@@ -22,6 +22,7 @@ import { AuthProvider } from "./auth/AuthProvider";
 import ChatCall from "./pages/chat/VideoChat";
 import DocRegister from "./auth/DocRegister";
 import AiDoctor from "./pages/AiDoctor";
+import HealthFeedPage from "./pages/HealthFeed";
 
 const queryClient = new QueryClient();
 
@@ -125,6 +126,14 @@ const App = () => (
                 element={
                   <AuthProvider>
                     <AiDoctor />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/feed"
+                element={
+                  <AuthProvider>
+                    <HealthFeedPage />
                   </AuthProvider>
                 }
               />
