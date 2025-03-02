@@ -9,7 +9,6 @@ import Appointments from "./pages/Appointments";
 import PreventiveHealth from "./pages/PreventiveHealth";
 import Insurance from "./pages/Insurance";
 import Symptoms from "./pages/Symptoms";
-import BMI from "./pages/BMI";
 import Medicine from "./pages/Medicine";
 import NotFound from "./pages/NotFound";
 import Login from "./auth/Login";
@@ -97,14 +96,6 @@ const App = () => (
                 element={
                   <AuthProvider>
                     <Symptoms />
-                  </AuthProvider>
-                }
-              />
-              <Route
-                path="/bmi"
-                element={
-                  <AuthProvider>
-                    <BMI />
                   </AuthProvider>
                 }
               />
