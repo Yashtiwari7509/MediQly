@@ -15,6 +15,8 @@ import {
   Video,
   BookA,
   Shapes,
+  Users,
+  AlertCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -32,12 +34,13 @@ const sidebarItems = [
   { icon: HeartPulse, label: "Preventive Health", path: "/preventive-health" },
   { icon: Shield, label: "Insurance", path: "/insurance" },
   { icon: Activity, label: "Symptoms", path: "/symptoms" },
-  { icon: LineChart, label: "BMI Index", path: "/bmi" },
+  { icon: Users, label: "Consultation", path: "/consultation" },
   { icon: Pill, label: "Medicine", path: "/medicine" },
   { icon: Bot, label: "AI Doctor", path: "/ai-doctor" },
   { icon: Video, label: "Feed", path: "/feed" },
   { icon: BookA, label: "Report", path: "/report" },
   { icon: Shapes, label: "Diet", path: "/diet" },
+  { icon: AlertCircle, label: "Emergency", path: "/emergency" },
 ];
 
 export function Sidebar() {

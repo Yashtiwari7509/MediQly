@@ -9,6 +9,7 @@ import Appointments from "./pages/Appointments";
 import PreventiveHealth from "./pages/PreventiveHealth";
 import Insurance from "./pages/Insurance";
 import Symptoms from "./pages/Symptoms";
+import BMI from "./pages/Consultation";
 import Medicine from "./pages/Medicine";
 import NotFound from "./pages/NotFound";
 import Login from "./auth/Login";
@@ -25,6 +26,9 @@ import HealthFeedPage from "./pages/HealthFeed";
 import RepostsPage from "./pages/Report";
 import Diet from "./pages/Diet";
 import MainLayout from "./components/layout/MainLayout";
+import ConsultationBooking from "./pages/ConsBooking";
+import Consultation from "./pages/Consultation";
+import Emergency from "./pages/Emergency";
 
 const queryClient = new QueryClient();
 
@@ -100,6 +104,22 @@ const App = () => (
                 }
               />
               <Route
+                path="/consultation"
+                element={
+                  <AuthProvider>
+                    <Consultation />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/consultation/:doctorId"
+                element={
+                  <AuthProvider>
+                    <ConsultationBooking />
+                  </AuthProvider>
+                }
+              />
+              <Route
                 path="/medicine"
                 element={
                   <AuthProvider>
@@ -146,6 +166,14 @@ const App = () => (
                 element={
                   <AuthProvider>
                     <Diet />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/emergency"
+                element={
+                  <AuthProvider>
+                    <Emergency />
                   </AuthProvider>
                 }
               />
