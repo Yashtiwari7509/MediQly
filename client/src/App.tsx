@@ -23,6 +23,9 @@ import ChatCall from "./pages/chat/VideoChat";
 import DocRegister from "./auth/DocRegister";
 import AiDoctor from "./pages/AiDoctor";
 import HealthFeedPage from "./pages/HealthFeed";
+import RepostsPage from "./pages/Report";
+import Diet from "./pages/Diet";
+import MainLayout from "./components/layout/MainLayout";
 
 const queryClient = new QueryClient();
 
@@ -134,6 +137,24 @@ const App = () => (
                 element={
                   <AuthProvider>
                     <HealthFeedPage />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/report"
+                element={
+                  <AuthProvider>
+                    <MainLayout>
+                      <RepostsPage />
+                    </MainLayout>
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/diet"
+                element={
+                  <AuthProvider>
+                    <Diet />
                   </AuthProvider>
                 }
               />

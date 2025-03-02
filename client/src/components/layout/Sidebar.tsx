@@ -13,6 +13,8 @@ import {
   Menu,
   X,
   Video,
+  BookA,
+  Shapes,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -34,6 +36,8 @@ const sidebarItems = [
   { icon: Pill, label: "Medicine", path: "/medicine" },
   { icon: Bot, label: "AI Doctor", path: "/ai-doctor" },
   { icon: Video, label: "Feed", path: "/feed" },
+  { icon: BookA, label: "Report", path: "/report" },
+  { icon: Shapes, label: "Diet", path: "/diet" },
 ];
 
 export function Sidebar() {
