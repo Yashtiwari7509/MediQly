@@ -29,6 +29,7 @@ import MainLayout from "./components/layout/MainLayout";
 import ConsultationBooking from "./pages/ConsBooking";
 import Consultation from "./pages/Consultation";
 import Emergency from "./pages/Emergency";
+import CalorieCalculator from "./pages/CalorieCalculator";
 
 const queryClient = new QueryClient();
 
@@ -68,14 +69,6 @@ const App = () => (
                 element={
                   <AuthProvider>
                     <HealthTracker />
-                  </AuthProvider>
-                }
-              />
-              <Route
-                path="/appointments"
-                element={
-                  <AuthProvider>
-                    <Appointments />
                   </AuthProvider>
                 }
               />
@@ -124,6 +117,14 @@ const App = () => (
                 element={
                   <AuthProvider>
                     <Medicine />
+                  </AuthProvider>
+                }
+              />
+              <Route
+                path="/calorie-calculator"
+                element={
+                  <AuthProvider>
+                    <CalorieCalculator />
                   </AuthProvider>
                 }
               />

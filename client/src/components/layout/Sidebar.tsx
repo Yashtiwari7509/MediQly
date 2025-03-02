@@ -30,17 +30,16 @@ const sidebarItems = [
     label: "Health Tracker",
     path: "/health-tracker",
   },
-  { icon: Calendar, label: "Appointments", path: "/appointments" },
   { icon: HeartPulse, label: "Preventive Health", path: "/preventive-health" },
   { icon: Shield, label: "Insurance", path: "/insurance" },
   { icon: Activity, label: "Symptoms", path: "/symptoms" },
   { icon: Users, label: "Consultation", path: "/consultation" },
   { icon: Pill, label: "Medicine", path: "/medicine" },
-  { icon: Bot, label: "AI Doctor", path: "/ai-doctor" },
   { icon: Video, label: "Feed", path: "/feed" },
   { icon: BookA, label: "Report", path: "/report" },
   { icon: Shapes, label: "Diet", path: "/diet" },
   { icon: AlertCircle, label: "Emergency", path: "/emergency" },
+  { icon: Bot, label: "AI Doctor", path: "/ai-doctor" },
 ];
 
 export function Sidebar() {

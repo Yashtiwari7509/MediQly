@@ -268,7 +268,7 @@ ${text}`;
             <div className="inline-flex items-center px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full mb-2 gradient-text">
               Medical Analysis
             </div>
-            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight gradient-heading">
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight primary-grad">
               Visual Health Insights
             </h1>
             <p className="text-muted-foreground mt-2 max-w-lg">
